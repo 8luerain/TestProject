@@ -4,8 +4,10 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Scroller;
 
 /**
  * Project: TestProject.
@@ -27,6 +29,10 @@ public class MyScroll extends ViewGroup {
     private int mOriginalBottomMargin;
     private boolean isStoreValue; //Margin初始值是否记录
 
+    private VelocityTracker mVelocityTracker;
+
+    private Scroller mScroller;
+
     private View mContent;
     private MarginLayoutParams mContentMarginLP;
 
@@ -40,6 +46,12 @@ public class MyScroll extends ViewGroup {
 
     public MyScroll(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        initVarables();
+    }
+
+    private void initVarables() {
+        mVelocityTracker = VelocityTracker.obtain();
+        mScroller = new Scroller(getContext());
     }
 
     @Override
@@ -57,6 +69,7 @@ public class MyScroll extends ViewGroup {
             measureChildWithMargins(getChildAt(i), widthMeasureSpec, 0, heightMeasureSpec, 0);
         }
 
+        Log.d(TAG, "onMeasure: mesured [" + getChildAt(0).getMeasuredHeight() + "]");
         if (haveNoChildren()) {
             /*当没有孩子时，wrap_content为0 ， 其他的为原始设定值*/
             setMeasuredDimension(widthMode == MeasureSpec.AT_MOST ? 0 : widthSize, heightMode == MeasureSpec.AT_MOST ? 0 : heightSize);
@@ -108,6 +121,7 @@ public class MyScroll extends ViewGroup {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        mVelocityTracker.addMovement(event);
         float currentX = event.getX();
         float currentY = event.getY();
         int action = event.getAction();
@@ -126,7 +140,12 @@ public class MyScroll extends ViewGroup {
                 Log.d(TAG, "onTouchEvent: ACTION_MOVE : dx [" + dx + "] dy[" + dy + "]");
                 break;
             case MotionEvent.ACTION_UP:
-                Log.d(TAG, "onTouchEvent: ACTION_UP");
+                mVelocityTracker.computeCurrentVelocity(1000);
+                float yVelocity = mVelocityTracker.getYVelocity();
+//                mScroller.startScroll((int)mContent.getX(),(int)mContent.getY(),0,-100,1000);
+//                mContent.postInvalidate();
+                Log.d(TAG, "onTouchEvent: mContent.getY() [" + mContent.getY() + "]  mContent.getTranslationY() [" + mContent.getTranslationY() + "] ");
+                Log.d(TAG, "onTouchEvent: ACTION_UP &  mContent.getScrollY() [" + mContentMarginLP.topMargin + "] & yVelocity [" + yVelocity + "]");
                 break;
         }
         return true;
@@ -137,16 +156,33 @@ public class MyScroll extends ViewGroup {
 
         if (newTopMargin > mMaxTopMargin)
             newTopMargin = mMaxTopMargin;
-        if (newTopMargin < mMinTopMargin)
-            newTopMargin = mMinTopMargin;
+//        if (newTopMargin < mMinTopMargin)
+//            newTopMargin = mMinTopMargin;
 
         mContentMarginLP.topMargin = newTopMargin;
         requestLayout();
+//        float newTransY = mContent.getTranslationY() + dy;
+//        mContent.setTranslationY(newTransY);
+//        mContent.setY(mContent.getY() + dy);
     }
 
 
     @Override
     public LayoutParams generateLayoutParams(AttributeSet attrs) {
         return new MarginLayoutParams(getContext(), attrs);
+    }
+
+//    @Override
+//    public void computeScroll() {
+//        if (mScroller.computeScrollOffset()) {
+//            scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
+//            mContent.postInvalidate();
+//        }
+//    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mVelocityTracker.recycle();
     }
 }

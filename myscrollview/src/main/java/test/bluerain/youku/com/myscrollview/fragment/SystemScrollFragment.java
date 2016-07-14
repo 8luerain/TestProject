@@ -3,6 +3,7 @@ package test.bluerain.youku.com.myscrollview.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import test.bluerain.youku.com.myscrollview.R;
  * Contact:<a href="mailto:8luerain@gmail.com">Contact_me_now</a>
  */
 public class SystemScrollFragment extends Fragment {
+    private static final String TAG = "SystemScrollFragment";
 
     private TextView mTextView;
 
@@ -38,5 +40,11 @@ public class SystemScrollFragment extends Fragment {
             builder.append((char) random.nextInt(40) + 40);
         }
         mTextView.setText(builder.toString());
+        rootView.post(new Runnable() {
+            @Override
+            public void run() {
+                Log.d(TAG, "initViews: SystemtextviewSize [" + mTextView.getMeasuredHeight() + "]");
+            }
+        });
     }
 }
