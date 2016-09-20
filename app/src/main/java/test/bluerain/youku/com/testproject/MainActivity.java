@@ -1,6 +1,9 @@
 package test.bluerain.youku.com.testproject;
 
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
@@ -24,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private GameTagGradview mGameTagGradview;
 
     private List<String> mData = new ArrayList<>();
+    private Handler handler;
 
 
     @Override
@@ -32,7 +36,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initview();
-
+        AsyncTask asyncTask = new AsyncTask() {
+            @Override
+            protected Object doInBackground(Object[] params) {
+                return null;
+            }
+        };
 
     }
 
@@ -98,7 +107,19 @@ public class MainActivity extends AppCompatActivity {
         });
         mGameTagGradview.setData(mData);
 
+        CommonUtils instance = CommonUtils.getINSTANCE(
+
+        );
+        SharedPreferences sharedPF = instance.getSharedPF();
+
+
         //tag gradview end
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacksAndMessages(null);
+
+    }
 }

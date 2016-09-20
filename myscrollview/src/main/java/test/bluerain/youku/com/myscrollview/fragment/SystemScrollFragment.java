@@ -35,7 +35,7 @@ public class SystemScrollFragment extends Fragment {
     private void initViews(View rootView) {
         mTextView = (TextView) rootView.findViewById(R.id.txv_fragment_system_test);
         StringBuilder builder = new StringBuilder();
-        for (int j = 0; j < 2000; j++) {
+        for (int j = 0; j < 200; j++) {
             Random random = new Random();
             builder.append((char) random.nextInt(40) + 40);
         }

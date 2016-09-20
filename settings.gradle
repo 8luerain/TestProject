@@ -1,1 +1,1 @@
-include ':app', ':viewstatetest', ':rxandroidexplore', ':androidtestsection3', ':myscrollview'
+include ':app', ':viewstatetest', ':rxandroidexplore', ':androidtestsection3', ':myscrollview', ':javalib', ':lib'

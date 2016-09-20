@@ -67,6 +67,7 @@ public class MyScroll extends ViewGroup {
 
         for (int i = 0; i < getChildCount(); i++) {
             measureChildWithMargins(getChildAt(i), widthMeasureSpec, 0, heightMeasureSpec, 0);
+//            PendingIntent.getActivity()
         }
 
         Log.d(TAG, "onMeasure: mesured [" + getChildAt(0).getMeasuredHeight() + "]");
